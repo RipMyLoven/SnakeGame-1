@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SnakeMaduussTARpv23")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+787d30283a4f6eb9fdcc03d757b08e7f47262158")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+94d13ded6a82fade249c1838593ff8b6ae9e3abd")]
 [assembly: System.Reflection.AssemblyProductAttribute("SnakeMaduussTARpv23")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SnakeMaduussTARpv23")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
