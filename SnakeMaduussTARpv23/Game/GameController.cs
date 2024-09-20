@@ -16,7 +16,7 @@ namespace SnakeMaduussTARpv23.Game
             Console.Clear();
 
             IWavePlayer waveOutDevice = new WaveOutEvent();
-            AudioFileReader audioFileReader = new AudioFileReader(@"..\..\..\song.mp3");
+            AudioFileReader audioFileReader = new AudioFileReader(@"song.mp3");
             waveOutDevice.Init(audioFileReader);
             waveOutDevice.Play();
 
@@ -31,6 +31,11 @@ namespace SnakeMaduussTARpv23.Game
             Point p = new Point(4, 5, '*');
             Snake snake = new Snake(p, 4, Direction.RIGHT);
             snake.Draw();
+
+            Obstacle obstacle1 = new Obstacle(20, 10, 4, 4);
+            Obstacle obstacle2 = new Obstacle(40, 15, 5, 2);
+            obstacle1.Draw();
+            obstacle2.Draw();
 
             FoodCreator foodCreator = new FoodCreator(80, 25, '$');
             Point food = foodCreator.CreateFood();
