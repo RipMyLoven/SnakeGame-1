@@ -1,6 +1,6 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
-using Figgle;
 
 namespace SnakeMaduussTARpv23.Game
 {
@@ -8,7 +8,7 @@ namespace SnakeMaduussTARpv23.Game
     {
         public void Display()
         {
-            string[] buttons = { "Start Game", "Settings", "Exit" };
+            string[] buttons = { "Start Game", "Settings", "Leaderboard", "Exit" };
             int selectedButton = 0;
             ConsoleKey key;
 
@@ -36,6 +36,9 @@ namespace SnakeMaduussTARpv23.Game
                     ShowSettings();
                     break;
                 case 2:
+                    ShowLeaderboard(); // Calls leaderboard function
+                    break;
+                case 3:
                     ExitGame();
                     break;
             }
@@ -48,9 +51,6 @@ namespace SnakeMaduussTARpv23.Game
             string playerName = Console.ReadLine();
 
             Console.Clear();
-            string asciiArt = FiggleFonts.Standard.Render(playerName);
-            Console.WriteLine(asciiArt);
-            Thread.Sleep(100000);
 
             GameController.StartGame(playerName);
         }
@@ -90,29 +90,6 @@ namespace SnakeMaduussTARpv23.Game
             Console.ResetColor();
         }
 
-        private string[] GetTitle()
-        {
-            return new string[]
-            {
-                "   SSSSSSSSSSSSSSS                                     kkkkkkkk                               ",
-                " SS:::::::::::::::S                                    k::::::k                               ",
-                "S:::::SSSSSS::::::S                                    k::::::k                               ",
-                "S:::::S     SSSSSSS                                    k::::::k                               ",
-                "S:::::S            nnnn  nnnnnnnn      aaaaaaaaaaaaa    k:::::k    kkkkkkk    eeeeeeeeeeee    ",
-                "S:::::S            n:::nn::::::::nn    a::::::::::::a   k:::::k   k:::::k   ee::::::::::::ee  ",
-                " S::::SSSS         n::::::::::::::nn   aaaaaaaaa:::::a  k:::::k  k:::::k   e::::::eeeee:::::ee",
-                "  SS::::::SSSSS    nn:::::::::::::::n           a::::a  k:::::k k:::::k   e::::::e     e:::::e",
-                "    SSS::::::::SS    n:::::nnnn:::::n    aaaaaaa:::::a  k::::::k:::::k    e:::::::eeeee::::::e",
-                "       SSSSSS::::S   n::::n    n::::n  aa::::::::::::a  k:::::::::::k     e:::::::::::::::::e ",
-                "            S:::::S  n::::n    n::::n a::::aaaa::::::a  k:::::::::::k     e::::::eeeeeeeeeee  ",
-                "            S:::::S  n::::n    n::::na::::a    a:::::a  k::::::k:::::k    e:::::::e           ",
-                "SSSSSSS     S:::::S  n::::n    n::::na::::a    a:::::a k::::::k k:::::k   e::::::::e          ",
-                "S::::::SSSSSS:::::S  n::::n    n::::na:::::aaaa::::::a k::::::k  k:::::k   e::::::::eeeeeeee  ",
-                "S:::::::::::::::SS   n::::n    n::::n a::::::::::aa:::ak::::::k   k:::::k   ee:::::::::::::e  ",
-                " SSSSSSSSSSSSSSS     nnnnnn    nnnnnn  aaaaaaaaaa  aaaakkkkkkkk    kkkkkkk    eeeeeeeeeeeeee  ",
-            };
-        }
-
         private void ShowSettings()
         {
             string[] settingsOptions = { "Speed: Normal", "Sound: On", "Back" };
@@ -121,7 +98,7 @@ namespace SnakeMaduussTARpv23.Game
 
             do
             {
-                DrawSettingsMenu(settingsOptions, selectedSetting);
+                DrawMenu(settingsOptions, selectedSetting);
                 key = Console.ReadKey(true).Key;
 
                 if (key == ConsoleKey.UpArrow)
@@ -150,34 +127,28 @@ namespace SnakeMaduussTARpv23.Game
             Console.ReadKey(true);
         }
 
-        private void DrawSettingsMenu(string[] settingsOptions, int selectedSetting)
+        private void ShowLeaderboard()
         {
             Console.Clear();
-            int xOffset = 10;
-            int yOffset = 5;
+            string filePath = @"..\..\..\Text.txt";
 
-            Console.SetCursorPosition(xOffset, yOffset);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Settings Menu:");
-            Console.ResetColor();
-
-            Console.SetCursorPosition(xOffset, yOffset + 2);
-            for (int i = 0; i < settingsOptions.Length; i++)
+            if (File.Exists(filePath))
             {
-                Console.SetCursorPosition(xOffset, Console.CursorTop);
-                if (i == selectedSetting)
+                Console.WriteLine("Leaderboard:\n");
+                string[] lines = File.ReadAllLines(filePath);
+                foreach (string line in lines)
                 {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.WriteLine($"  > {settingsOptions[i]}  ");
-                }
-                else
-                {
-                    Console.ResetColor();
-                    Console.WriteLine($"    {settingsOptions[i]}  ");
+                    Console.WriteLine(line);
                 }
             }
-            Console.ResetColor();
+            else
+            {
+                Console.WriteLine("No leaderboard data available.");
+            }
+
+            Console.WriteLine("\nPress any key to return to the main menu...");
+            Console.ReadKey(true);
+            Display();
         }
 
         private void ExitGame()
@@ -186,6 +157,29 @@ namespace SnakeMaduussTARpv23.Game
             Console.WriteLine("Exiting the game. Goodbye!");
             Thread.Sleep(1000);
             Environment.Exit(0);
+        }
+
+        private string[] GetTitle()
+        {
+            return new string[]
+            {
+                "   SSSSSSSSSSSSSSS                                     kkkkkkkk                               ",
+                " SS:::::::::::::::S                                    k::::::k                               ",
+                "S:::::SSSSSS::::::S                                    k::::::k                               ",
+                "S:::::S     SSSSSSS                                    k::::::k                               ",
+                "S:::::S            nnnn  nnnnnnnn      aaaaaaaaaaaaa    k:::::k    kkkkkkk    eeeeeeeeeeee    ",
+                "S:::::S            n:::nn::::::::nn    a::::::::::::a   k:::::k   k:::::k   ee::::::::::::ee  ",
+                " S::::SSSS         n::::::::::::::nn   aaaaaaaaa:::::a  k:::::k  k:::::k   e::::::eeeee:::::ee",
+                "  SS::::::SSSSS    nn:::::::::::::::n           a::::a  k:::::k k:::::k   e::::::e     e:::::e",
+                "    SSS::::::::SS    n:::::nnnn:::::n    aaaaaaa:::::a  k::::::k:::::k    e:::::::eeeee::::::e",
+                "       SSSSSS::::S   n::::n    n::::n  aa::::::::::::a  k:::::::::::k     e:::::::::::::::::e ",
+                "            S:::::S  n::::n    n::::n a::::aaaa::::::a  k:::::::::::k     e::::::eeeeeeeeeee  ",
+                "            S:::::S  n::::n    n::::na::::a    a:::::a  k::::::k:::::k    e:::::::e           ",
+                "SSSSSSS     S:::::S  n::::n    n::::na::::a    a:::::a k::::::k k:::::k   e::::::::e          ",
+                "S::::::SSSSSS:::::S  n::::n    n::::na:::::aaaa::::::a k::::::k  k:::::k   e::::::::eeeeeeee  ",
+                "S:::::::::::::::SS   n::::n    n::::n a::::::::::aa:::ak::::::k   k:::::k   ee:::::::::::::e  ",
+                " SSSSSSSSSSSSSSS     nnnnnn    nnnnnn  aaaaaaaaaa  aaaakkkkkkkk    kkkkkkk    eeeeeeeeeeeeee  ",
+            };
         }
     }
 }

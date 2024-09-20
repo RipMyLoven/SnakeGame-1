@@ -9,18 +9,20 @@ namespace SnakeMaduussTARpv23.Game
 {
     public static class GameController
     {
+        private static object _consoleLock = new object();
+
         public static void StartGame(string playerName) 
         {
             Console.Clear();
 
             IWavePlayer waveOutDevice = new WaveOutEvent();
-            AudioFileReader audioFileReader = new AudioFileReader(@"C:\Users\ripmy\source\repos\SnakeMaduussTARpv231\SnakeMaduussTARpv23\Music\song.mp3");
+            AudioFileReader audioFileReader = new AudioFileReader(@"..\..\..\song.mp3");
             waveOutDevice.Init(audioFileReader);
             waveOutDevice.Play();
 
             FileSaveRead fileSaveRead = new FileSaveRead();
 
-            Console.SetWindowSize(80, 25);
+            Console.SetWindowSize(120, 25);
 
             Walls walls = new Walls(80, 25);
             walls.Draw();
@@ -42,47 +44,50 @@ namespace SnakeMaduussTARpv23.Game
                 while (true)
                 {
                     TimeSpan ts = stopwatch.Elapsed;
-                    Console.SetCursorPosition(0, 0);
-                    Console.WriteLine($"Time Played: {ts.Minutes:D2}:{ts.Seconds:D2}  ");
-                    Thread.Sleep(1000);
+                    lock (_consoleLock)
+                    {
+                        Console.SetCursorPosition(83, 0);
+                        Console.Write(new string(' ', Console.WindowWidth - 83));
+                        Console.SetCursorPosition(83, 0);
+                        Console.WriteLine($"Time Played: {ts.Minutes:D2}:{ts.Seconds:D2}");
+                    }
+                    Thread.Sleep(500);
                 }
             });
             timerThread.Start();
 
             while (true)
             {
-
-                if (walls.IsHit(snake) || snake.IsHitTail())
+                lock (_consoleLock)
                 {
-                    break;
+                    if (walls.IsHit(snake) || snake.IsHitTail())
+                    {
+                        break;
+                    }
+
+                    if (snake.Eat(food))
+                    {
+                        EatSound.PlayEatSound();
+                        food = foodCreator.CreateFood();
+                        food.Draw();
+                    }
+                    else
+                    {
+                        snake.Move();
+                    }
+
+                    Thread.Sleep(100);
+
+                    if (Console.KeyAvailable)
+                    {
+                        ConsoleKeyInfo key = Console.ReadKey(true);
+                        snake.HandleKey(key.Key);
+                    }
                 }
-
-
-                if (snake.Eat(food))
-                {
-                    EatSound.PlayEatSound();
-                    food = foodCreator.CreateFood();
-                    food.Draw();
-                }
-                else
-                {
-                    snake.Move();
-                }
-
-                Thread.Sleep(100);
-
-                if (Console.KeyAvailable)
-                {
-                    ConsoleKeyInfo key = Console.ReadKey(true); 
-                    snake.HandleKey(key.Key);
-                }
-
-                Console.SetCursorPosition(0, 1);
-                Console.Write(new string(' ', Console.WindowWidth));
             }
 
             stopwatch.Stop();
-            fileSaveRead.SaveGameData(playerName, stopwatch.Elapsed); 
+            fileSaveRead.SaveGameData(playerName, stopwatch.Elapsed);
 
             GameOver.WriteGameOver();
             Console.ReadLine();

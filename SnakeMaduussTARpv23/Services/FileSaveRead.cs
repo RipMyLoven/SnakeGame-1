@@ -7,7 +7,7 @@ namespace SnakeMaduussTARpv23.Services
     {
         public void SaveGameData(string playerName, TimeSpan timePlayed)
         {
-            string filePath = @"C:\Users\ripmy\source\repos\SnakeMaduussTARpv231\SnakeMaduussTARpv23\Services\TxtFiles\Text.txt";
+            string filePath = @"..\..\..\Text.txt";
             using (StreamWriter writer = new StreamWriter(filePath, true))
             {
                 writer.WriteLine($"Player: {playerName}, Time Played: {timePlayed.Minutes:D2}:{timePlayed.Seconds:D2}");
