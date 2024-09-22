@@ -11,7 +11,7 @@ namespace SnakeMaduussTARpv23.Game
     {
         private static object _consoleLock = new object();
 
-        public static void StartGame(string playerName) 
+        public static void StartGame(string playerName, int gameSpeed) 
         {
             Console.Clear();
 
@@ -40,7 +40,6 @@ namespace SnakeMaduussTARpv23.Game
             obstacle2.Draw();
             obstacle3.Draw();
             obstacle4.Draw();
-
 
             FoodCreator foodCreator = new FoodCreator(80, 25, '$');
             Point food = foodCreator.CreateFood();
@@ -71,7 +70,8 @@ namespace SnakeMaduussTARpv23.Game
                 lock (_consoleLock)
                 {
                     if (walls.IsHit(snake) || snake.IsHitTail() || 
-                    obstacle1.IsHit(snake) || obstacle2.IsHit(snake) || obstacle3.IsHit(snake) || obstacle4.IsHit(snake))
+                        obstacle1.IsHit(snake) || obstacle2.IsHit(snake) || 
+                        obstacle3.IsHit(snake) || obstacle4.IsHit(snake))
                     {
                         break;
                     }
@@ -94,7 +94,8 @@ namespace SnakeMaduussTARpv23.Game
                         snake.Move();
                     }
 
-                    Thread.Sleep(100);
+                    // Используем gameSpeed вместо фиксированной задержки
+                    Thread.Sleep(gameSpeed); 
 
                     if (Console.KeyAvailable)
                     {
