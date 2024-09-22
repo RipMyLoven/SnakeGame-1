@@ -32,10 +32,15 @@ namespace SnakeMaduussTARpv23.Game
             Snake snake = new Snake(p, 4, Direction.RIGHT);
             snake.Draw();
 
-            Obstacle obstacle1 = new Obstacle(20, 10, 4, 4);
-            Obstacle obstacle2 = new Obstacle(40, 15, 5, 2);
+            Obstacle obstacle1 = new Obstacle(10, 10, 2, 4);
+            Obstacle obstacle2 = new Obstacle(20, 10, 3, 2);
+            Obstacle obstacle3 = new Obstacle(30, 12, 5, 5);
+            Obstacle obstacle4 = new Obstacle(40, 20, 2, 4);
             obstacle1.Draw();
             obstacle2.Draw();
+            obstacle3.Draw();
+            obstacle4.Draw();
+
 
             FoodCreator foodCreator = new FoodCreator(80, 25, '$');
             Point food = foodCreator.CreateFood();
@@ -65,14 +70,22 @@ namespace SnakeMaduussTARpv23.Game
             {
                 lock (_consoleLock)
                 {
-                    if (walls.IsHit(snake) || snake.IsHitTail())
+                    if (walls.IsHit(snake) || snake.IsHitTail() || 
+                    obstacle1.IsHit(snake) || obstacle2.IsHit(snake) || obstacle3.IsHit(snake) || obstacle4.IsHit(snake))
                     {
                         break;
                     }
 
+                    // Если змея съела еду
                     if (snake.Eat(food))
                     {
                         EatSound.PlayEatSound();
+                        
+                        obstacle1.MoveObstacle(80, 25, snake.GetPoints(), food);
+                        obstacle2.MoveObstacle(80, 25, snake.GetPoints(), food);
+                        obstacle3.MoveObstacle(80, 25, snake.GetPoints(), food);
+                        obstacle4.MoveObstacle(80, 25, snake.GetPoints(), food);
+
                         food = foodCreator.CreateFood();
                         food.Draw();
                     }
