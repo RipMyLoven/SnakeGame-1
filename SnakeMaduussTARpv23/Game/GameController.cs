@@ -7,18 +7,21 @@ using System.Threading;
 
 namespace SnakeMaduussTARpv23.Game
 {
-    public static class GameController
+    public class GameController
     {
         private static object _consoleLock = new object();
 
-        public static void StartGame(string playerName, int gameSpeed) 
+            public void PlayAudio(string filePath)
+            {
+                var process = new Process();
+                process.StartInfo.FileName = "gst-launch-1.0";
+                process.StartInfo.Arguments = $"{filePath} ! audioconvert ! autoaudiosink";
+                process.Start();
+            }
+
+        public static void StartGame(string playerName) 
         {
             Console.Clear();
-
-            IWavePlayer waveOutDevice = new WaveOutEvent();
-            AudioFileReader audioFileReader = new AudioFileReader(@"song.mp3");
-            waveOutDevice.Init(audioFileReader);
-            waveOutDevice.Play();
 
             FileSaveRead fileSaveRead = new FileSaveRead();
 
@@ -79,7 +82,7 @@ namespace SnakeMaduussTARpv23.Game
                     // Если змея съела еду
                     if (snake.Eat(food))
                     {
-                        EatSound.PlayEatSound();
+                        //EatSound.PlayEatSound();
                         
                         obstacle1.MoveObstacle(80, 25, snake.GetPoints(), food);
                         obstacle2.MoveObstacle(80, 25, snake.GetPoints(), food);
@@ -95,7 +98,7 @@ namespace SnakeMaduussTARpv23.Game
                     }
 
                     // Используем gameSpeed вместо фиксированной задержки
-                    Thread.Sleep(gameSpeed); 
+                    Thread.Sleep(100); 
 
                     if (Console.KeyAvailable)
                     {
